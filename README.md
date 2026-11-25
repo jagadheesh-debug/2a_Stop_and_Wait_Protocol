@@ -11,37 +11,54 @@ To write a python program to perform stop and wait protocol
 ## PROGRAM
 ## SERVER:
 ```
-import socket 
-s=socket.socket() 
-s.bind(('localhost',8000)) 
-s.listen(5) 
-c,addr=s.accept() 
-while True: 
-    i=input("Enter a data: ") 
-    c.send(i.encode()) 
-    ack=c.recv(1024).decode() 
-    if ack: 
-        print(ack) 
-        continue 
-    else: 
-        c.close() 
-        break
+import socket
+
+s = socket.socket()
+s.connect(('localhost', 8000))
+
+data = ["Frame 1", "Frame 2", "Frame 3", "Frame 4"]
+
+for frame in data:
+    print("Sending:", frame)
+    s.send(frame.encode())
+
+    ack = s.recv(1024).decode()
+    print("Acknowledgement received:", ack)
+
+s.close()
 ```
 ## CLIENT:
 ```
-import socket 
-s=socket.socket() 
-s.connect(('localhost',8000)) 
-while True: 
-    print(s.recv(1024).decode()) 
-    s.send("Acknowledgement Recived".encode())
+import socket
+
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(1)
+
+print("Receiver is waiting...")
+c, addr = s.accept()
+
+while True:
+    data = c.recv(1024).decode()
+
+    if not data:
+        break
+
+    print("Received:", data)
+
+    ack = "ACK"
+    c.send(ack.encode())
+    print("Acknowledgement sent:", ack)
+
+c.close()
+s.close()
 ```
 ## OUTPUT
 ## server
-<img width="1091" height="303" alt="Screenshot 2026-11-04 085615" src="https://github.com/user-attachments/assets/49ca9f81-dec7-406f-8208-bef3af79f8f9" />
+<img width="486" height="278" alt="image" src="https://github.com/user-attachments/assets/1169d91d-7931-4c90-9d2c-378f08d76135" />
 
 ## client
-<img width="751" height="292" alt="Screenshot 2026-11-04 085621" src="https://github.com/user-attachments/assets/ab74f600-ec8c-4998-850b-b556af3624c3" />
+<img width="470" height="288" alt="image" src="https://github.com/user-attachments/assets/fa6d9c33-4e16-4c71-8ab1-d82beff12284" />
 
 
 ## RESULT
